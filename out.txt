@@ -1,0 +1,72 @@
+
+main:     file format elf32-i386
+
+
+Disassembly of section .text:
+
+08049000 <slen>:
+ 8049000:	53                   	push   %ebx
+ 8049001:	89 c3                	mov    %eax,%ebx
+
+08049003 <nextchar>:
+ 8049003:	80 38 00             	cmpb   $0x0,(%eax)
+ 8049006:	74 03                	je     804900b <done>
+ 8049008:	40                   	inc    %eax
+ 8049009:	eb f8                	jmp    8049003 <nextchar>
+
+0804900b <done>:
+ 804900b:	29 d8                	sub    %ebx,%eax
+ 804900d:	5b                   	pop    %ebx
+ 804900e:	c3                   	ret    
+
+0804900f <sprint>:
+ 804900f:	52                   	push   %edx
+ 8049010:	51                   	push   %ecx
+ 8049011:	53                   	push   %ebx
+ 8049012:	50                   	push   %eax
+ 8049013:	e8 e8 ff ff ff       	call   8049000 <slen>
+ 8049018:	89 c2                	mov    %eax,%edx
+ 804901a:	58                   	pop    %eax
+ 804901b:	89 c1                	mov    %eax,%ecx
+ 804901d:	50                   	push   %eax
+ 804901e:	bb 01 00 00 00       	mov    $0x1,%ebx
+ 8049023:	b8 04 00 00 00       	mov    $0x4,%eax
+ 8049028:	cd 80                	int    $0x80
+ 804902a:	58                   	pop    %eax
+ 804902b:	5b                   	pop    %ebx
+ 804902c:	59                   	pop    %ecx
+ 804902d:	5a                   	pop    %edx
+ 804902e:	c3                   	ret    
+
+0804902f <sprintNL>:
+ 804902f:	e8 db ff ff ff       	call   804900f <sprint>
+ 8049034:	50                   	push   %eax
+ 8049035:	b8 0a 00 00 00       	mov    $0xa,%eax
+ 804903a:	50                   	push   %eax
+ 804903b:	89 e0                	mov    %esp,%eax
+ 804903d:	e8 cd ff ff ff       	call   804900f <sprint>
+ 8049042:	58                   	pop    %eax
+ 8049043:	58                   	pop    %eax
+ 8049044:	c3                   	ret    
+
+08049045 <quit>:
+ 8049045:	89 c3                	mov    %eax,%ebx
+ 8049047:	b8 01 00 00 00       	mov    $0x1,%eax
+ 804904c:	cd 80                	int    $0x80
+ 804904e:	c3                   	ret    
+
+0804904f <exit>:
+ 804904f:	b8 00 00 00 00       	mov    $0x0,%eax
+ 8049054:	e8 ec ff ff ff       	call   8049045 <quit>
+
+08049059 <_start>:
+ 8049059:	b8 00 a0 04 08       	mov    $0x804a000,%eax
+ 804905e:	e8 ac ff ff ff       	call   804900f <sprint>
+ 8049063:	ba ff 00 00 00       	mov    $0xff,%edx
+ 8049068:	b9 24 a0 04 08       	mov    $0x804a024,%ecx
+ 804906d:	bb 00 00 00 00       	mov    $0x0,%ebx
+ 8049072:	b8 03 00 00 00       	mov    $0x3,%eax
+ 8049077:	cd 80                	int    $0x80
+ 8049079:	b8 24 a0 04 08       	mov    $0x804a024,%eax
+ 804907e:	e8 ac ff ff ff       	call   804902f <sprintNL>
+ 8049083:	e8 c7 ff ff ff       	call   804904f <exit>
