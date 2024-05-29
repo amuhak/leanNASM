@@ -9,13 +9,13 @@ slen:
     push ebx      ; save ebx to stack to prevent corruption
     mov  ebx, eax ; move string into ebx
     
-nextchar:
+.nextchar:
     cmp byte [eax], 0 ; is edx end of string
-    jz  done          ; if it is jump to done
+    jz  .done         ; if it is jump to done
     inc eax           ; else increment edx
-    jmp nextchar      ; loop back
+    jmp .nextchar     ; loop back
 
-done:
+.done:
     sub eax, ebx ; subtract to get length
     pop ebx      ; restore ebx
     ret
@@ -73,24 +73,24 @@ iprint:
     mov  ebx, 10 ; divide by 10
     mov  ecx, 0  ; start counter at 0
 
-iprint_loop:
-    inc  ecx         ; add to how long the number is
-    mov  edx, 0      ; empty edx
-    idiv ebx         ; divide eax by 10. The result is in eax and the remainder is in edx.
-    add  edx, 48     ; add 48 to turn it into ASCII  
-    push edx         ; push the remainder (the last digit of the number) to the stack for later use
-    cmp  eax, 0      ; eax == 0 ?
-    jne  iprint_loop ; if not loop back
+.iprint_loop:
+    inc  ecx          ; add to how long the number is
+    mov  edx, 0       ; empty edx
+    idiv ebx          ; divide eax by 10. The result is in eax and the remainder is in edx.
+    add  edx, 48      ; add 48 to turn it into ASCII  
+    push edx          ; push the remainder (the last digit of the number) to the stack for later use
+    cmp  eax, 0       ; eax == 0 ?
+    jne  .iprint_loop ; if not loop back
 
-iprint_print:
-    dec  ecx          ; decrement
-    mov  eax, esp     ; the digit in the most significant place is on top of the stack, so get its pointer
-    call sprint       ; print it
-    pop  eax          ; remove it from the stack
-    cmp  ecx, 0       ; is the counter done?
-    jne  iprint_print ; if it is, then we are done, else loop back
+.iprint_print:
+    dec  ecx           ; decrement
+    mov  eax, esp      ; the digit in the most significant place is on top of the stack, so get its pointer
+    call sprint        ; print it
+    pop  eax           ; remove it from the stack
+    cmp  ecx, 0        ; is the counter done?
+    jne  .iprint_print ; if it is, then we are done, else loop back
 
-iprint_done:
+.iprint_done:
     pop edx
     pop ecx
     pop ebx
@@ -130,17 +130,17 @@ atoi:
 
 
 
-atoi_loop:
+.atoi_loop:
     mov bl,         [esi] ; move the current ASCII char into the lower 8 bits of ebx (32 bit)
     sub ebx,        ecx   ; turn ASCII char into a number (subtract 48)
     mul edi               ; multiply eax by 10 to allow adding the next number in ebx
     add eax,        ebx   ; add the least significant position
     inc esi               ; increment esi to go to the next number
     cmp byte [esi], 0     ; have we reached the end of the string?
-    jne atoi_loop         ; if not loop 
+    jne .atoi_loop        ; if not loop 
 
 
-atoi_done:
+.atoi_done:
     pop edi
     pop esi
     pop edx

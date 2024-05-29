@@ -1,31 +1,65 @@
-%include 'functions.asm'
-
-SECTION .data
-msg1 db '12345', 0   ; message string asking user for input
-msg2 db 'Hello, ', 0 ; message string to use after user has entered their name
+; Namespace
+; Compile with: nasm -f elf namespace.asm
+; Link with (64 bit systems require elf_i386 option): ld -m elf_i386 namespace.o -o namespace
+; Run with: ./namespace
  
+%include        'functions.asm'
+ 
+SECTION .data
+f db 'Fizz', 0h ; a message string
+b db 'Buzz', 0h ; a message string
+t db 0          ; null terminator
+
+
 SECTION .text
 global  _start
-
+ 
 _start:
- 
-    pop ecx
-    pop ebx
-    dec ecx
-    mov ebx, 0
- 
-nextArg:
-    cmp  ecx, 0
-    jz   noMoreArgs
-    pop  eax
-    call atoi
-    add  ebx, eax
-    dec  ecx
-    jmp  nextArg
+    mov ecx, 0
 
- 
-noMoreArgs:
-    mov  eax, ebx ; move our data result into eax for printing
-    call iprintNL ; call our integer printing with linefeed function
-    call exit     ; call our quit function
+nextNo:
+    inc ecx
+    mov esi, 0
+    mov edi, 0
+
+.FizzCheck:
+    cmp  ecx, 10000
+    je   .done
+    mov  eax, ecx
+    mov  ebx, 3
+    mov  edx, 0
+    div  ebx
+    cmp  edx, 0
+    jne  .BuzzCheck
+    mov  eax, f
+    call sprint
+    mov  esi, 1
+
+.BuzzCheck:
+    mov  eax, ecx
+    mov  ebx, 5
+    mov  edx, 0
+    div  ebx
+    cmp  edx, 0
+    jne  .printNo
+    mov  eax, b
+    call sprint
+    mov  edi, 1
+
+.printNo:
+    cmp  esi, 0
+    jne  .loop
+    cmp  edi, 0
+    jne  .loop
+    mov  eax, ecx
+    call iprint
+
+.loop:
+    mov  eax, t
+    call sprintNL
+    jmp  nextNo
+
+.done:
+    call exit
+
     
